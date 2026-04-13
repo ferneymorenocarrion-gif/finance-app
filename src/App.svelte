@@ -22,19 +22,25 @@
 <table>
   <thead>
     <tr>
-      <td>description</td>
-      <td>value</td>
-      <td>date</td>
+      <th>description</th>
+      <th>value</th>
+      <th>date</th>
     </tr>
   </thead>
   <tbody>
-    {#each $expenses as expense}
-    <tr>
-      <td>{expense.description}</td>
-      <td>{formatAmount(expense.amount)}</td>
-      <td>{formatDate(expense.expenseCreation)}</td>
+    {#if $expenses.length > 0}
+      {#each $expenses as expense}
+      <tr>
+        <td>{expense.description}</td>
+        <td>{formatAmount(expense.amount)}</td>
+        <td>{formatDate(expense.expenseCreation)}</td>
+      </tr>
+      {/each}
+    {:else}
+      <tr>
+      <td colspan="3">no data added yet</td>
     </tr>
-    {/each}
+    {/if}
   </tbody>
 </table>
 <div class="total-expenses">
@@ -46,8 +52,10 @@
 <style lang="scss">
 table, td, th {
     border: 1px solid;
+    padding: 10px;
   }
   table {
     border-collapse: collapse;
+    width: 50%;
   }
 </style>
