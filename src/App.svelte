@@ -42,3 +42,12 @@
   <span>{formatAmount(totalExpenses)}</span>
 </div>
 </section>
+
+<style lang="scss">
+table, td, th {
+    border: 1px solid;
+  }
+  table {
+    border-collapse: collapse;
+  }
+</style>
