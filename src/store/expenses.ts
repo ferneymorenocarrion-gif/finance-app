@@ -1,10 +1,5 @@
 import { writable } from "svelte/store";
-
-interface Expenses {
-    description: string;
-    amount: number;
-    expenseCreation: Date;
-}
+import type { Expenses } from "../types/common";
 
 const expensesKey = 'expenses';
 

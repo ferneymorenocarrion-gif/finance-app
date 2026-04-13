@@ -2,13 +2,16 @@
 import {expenses} from '../../store/expenses';
 
 let description = '';
-let amount: number;
+let amount: number | string;
 const handleNewExpense = () => {
     expenses.update(expense => [...expense, {
         description,
         amount,
         expenseCreation: new Date(),
     }])
+
+    description = '';
+    amount = '';
 }
 
 </script>
