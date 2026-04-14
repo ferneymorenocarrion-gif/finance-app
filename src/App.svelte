@@ -10,6 +10,7 @@
 
     const handleClearStorage = () => {
       localStorage.clear();
+      window.location.reload();
     }
 
     $: console.log('expenses', $expenses);
@@ -17,7 +18,7 @@
 </script>
 
 <section id="center">
-<button on:click={handleClearStorage}>clear storage data</button>
+<button on:click={handleClearStorage}>clear storage data and reload app</button>
 <NewField></NewField>
 <table>
   <thead>
