@@ -1,36 +1,28 @@
 <script lang="ts">
-import {expenses} from '../../store/expenses';
+import {income} from '../../store/income';
+    import type { Income } from '../../types/common';
 
-let description = '';
-let amount: number | string;
-const handleNewExpense = () => {
-    expenses.update(expense => [...expense, {
-        description,
-        amount,
-        expenseCreation: new Date(),
-    }])
-
-    description = '';
+let amount: Income;
+const handleIncome = () => {
+    income.update((income) => Number(income) + Number(amount))
     amount = '';
 }
 
 </script>
 
-<div class="new-expense">
-    <div class="new-expense__content">
-        <span>new expense</span>
-        <form on:submit|preventDefault={handleNewExpense}>
-            <label for="description">description</label>
-            <input id="description" type="text" bind:value={description}>
+<div class="income">
+    <div class="income__content">
+        <span>new income</span>
+        <form on:submit|preventDefault={handleIncome}>
             <label for="amount">amount</label>
             <input id="amount" type="text" bind:value={amount}>
-            <button type="submit" aria-label="save-expense">save</button>
+            <button type="submit" aria-label="add-income">add</button>
         </form>
     </div>
 </div>
 
 <style lang="scss">
-    .new-expense {
+    .income {
         border: 1px solid white;
         padding: 10px 20px 20px;
         width: 100%;

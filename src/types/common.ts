@@ -3,3 +3,5 @@ export interface Expenses {
     amount: number | string;
     expenseCreation: Date;
 }
+
+export type Income = number | string;
