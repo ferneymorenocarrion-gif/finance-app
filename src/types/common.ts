@@ -1,7 +1,8 @@
-export interface Expenses {
+export interface Amount {
     description: string;
     amount: number | string;
-    expenseCreation: Date;
+    amountCreation: Date;
+    type: string;
 }
 
 export type Income = number | string;

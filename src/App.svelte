@@ -1,13 +1,23 @@
 <script>
-    import NewField from './components/newField/NewField.svelte';
-    import {expenses} from './store/expenses';
+    import NewAmount from './components/newAmount/NewAmount.svelte';
+    import {amounts} from './store/amounts';
     import {income} from './store/income';
     import { formatDate } from './utils/dateFormatting';
     import { formatAmount } from './utils/amountFormatter';
-    import Income from './components/income/Income.svelte';
+    // import Income from './components/income/Income.svelte';
+    import bussiness from './assets/bag.svg';
+    import reload from './assets/reload.svg';
+    import amount from './assets/coin.svg';
 
-    $: totalExpenses = $expenses.reduce((acc, expense) => {
-      return acc += Number(expense.amount);
+    $: expenses = $amounts.filter(amount => amount.type === 'expense');
+    $: incomes = $amounts.filter(amount => amount.type === 'income');
+
+    $: totalExpenses = expenses.reduce((acc, {amount}) => {
+      return acc += Number(amount);
+    }, 0)
+    
+    $: totalIncomes = incomes.reduce((acc, {amount}) => {
+      return acc += Number(amount);
     }, 0)
 
     const handleClearStorage = () => {
@@ -15,20 +25,25 @@
       window.location.reload();
     }
 
-    $: console.log('expenses', $expenses);
-    $: console.log('expense.expenseCreation', $expenses[0]?.expenseCreation);
+    $: console.log('amounts', $amounts);
+    $: console.log('expense.expenseCreation', $amounts[0]?.amountCreation);
 </script>
 
 <section id="center">
 <div class="account-summary">
-  <div class="account-summary__income summary"><span>Income</span><p>{formatAmount($income)}</p></div>
+  <div class="account-summary__income summary"><span>Income</span><p>{formatAmount(totalIncomes)}</p></div>
   <div class="account-summary__expenses summary"><span>Expenses</span><p>{formatAmount(totalExpenses)}</p></div>
-  <div class="account-summary__balance summary"><span>Balance</span><p>{formatAmount(Number($income) - totalExpenses)}</p></div>
-
+  <div class="account-summary__balance summary"><span>Balance</span><p>{formatAmount(Number(totalIncomes) - totalExpenses)}</p></div>
 </div>
-<button class="reset" on:click={handleClearStorage}>clear data and reload app</button>
-<Income></Income>
-<NewField></NewField>
+<nav class="nav">
+  <button class="reload nav__item" on:click={handleClearStorage}>
+    <img src={reload} alt="reload app"/>
+    <span>reload</span></button>
+  <button class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
+  <button class="my-bussiness nav__item" on:click={handleClearStorage}><img src={bussiness} alt="my bussiness"/><span>bussiness</span></button>
+</nav>
+<!-- <Income></Income> -->
+<NewAmount></NewAmount>
 <table>
   <thead>
     <tr>
@@ -38,12 +53,12 @@
     </tr>
   </thead>
   <tbody>
-    {#if $expenses.length > 0}
-      {#each $expenses as expense}
+    {#if expenses.length > 0}
+      {#each expenses as expense}
       <tr>
         <td>{expense.description}</td>
         <td>{formatAmount(expense.amount)}</td>
-        <td>{formatDate(expense.expenseCreation)}</td>
+        <td>{formatDate(expense.amountCreation)}</td>
       </tr>
       {/each}
     {:else}
@@ -53,10 +68,34 @@
     {/if}
   </tbody>
 </table>
-<div class="total-expenses">
+<table>
+  <thead>
+    <tr>
+      <th>description</th>
+      <th>value</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#if incomes.length > 0}
+      {#each incomes as income}
+      <tr>
+        <td>{income.description}</td>
+        <td>{formatAmount(income.amount)}</td>
+        <td>{formatDate(income.amountCreation)}</td>
+      </tr>
+      {/each}
+    {:else}
+      <tr>
+      <td colspan="3">no data added yet</td>
+    </tr>
+    {/if}
+  </tbody>
+</table>
+<!-- <div class="total-expenses">
   <span>total expenses</span>
   <span>{formatAmount(totalExpenses)}</span>
-</div>
+</div> -->
 </section>
 
 <style lang="scss">
@@ -72,7 +111,7 @@
 
   .account-summary {
     position: fixed;
-    top: 0;
+    bottom: 86px;
     left: 0;
     display: flex;
     flex-direction: column;
@@ -115,12 +154,35 @@
     }
   }
 
-  .reset {
+  .nav {
     position: fixed;
-    bottom: 0px;
     width: 100%;
-    padding: 15px;
-    font-size: 20px;
+    display: flex;
+    bottom: 0;
+    background-color: #e8e8e8;
+
+    .reload {
+      width: 25%;
+    }
+    
+    &__item {
+      padding: 10px;
+      width: calc(75% / 2);
+      display: flex;
+      flex-direction: column;
+      border: 0px;
+      background: none;
+      border-right: 1px solid #777a7c;
+      
+      img {
+        height: 45px;
+      }
+      
+      span {
+        color: #000000;
+        font-size: 18px;
+      }
+    }
   }
 
 </style>
