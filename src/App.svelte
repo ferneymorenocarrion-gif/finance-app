@@ -139,6 +139,7 @@
     position: relative;
     overflow: hidden;
     text-align: right;
+    z-index: 1;
 
     span {
       position: absolute;
@@ -160,6 +161,7 @@
     display: flex;
     bottom: 0;
     background-color: #e8e8e8;
+    z-index: 1;
 
     .reload {
       width: 25%;
