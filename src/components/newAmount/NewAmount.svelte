@@ -37,7 +37,7 @@ const handleNewExpense = () => {
                 <option value='expense'>Expense</option>
                 <option value='income'>Income</option>
             </select>
-            <button disabled={isDisabled} type="submit" aria-label="save-expense">save</button>
+            <button class="save" disabled={isDisabled} type="submit" aria-label="save-expense">save</button>
         </form>
     </div>
 </div>
@@ -58,6 +58,7 @@ const handleNewExpense = () => {
             font-size: 70px;
             font-weight: 600;
             color: rgba(0, 0, 0, 0.2);
+            min-width: 390px;
         }
 
         &__content {
@@ -82,6 +83,7 @@ const handleNewExpense = () => {
                 padding: 10px;
                 background-color: #a6c0f8;
                 color: #000000;
+                border-radius: 0;
             }
 
             button {
@@ -89,6 +91,10 @@ const handleNewExpense = () => {
                 background: none;
                 border: 1px solid white;
                 padding: 10px 5px;
+            }
+
+            .save {
+                font-size: 20px;
             }
         }
     }

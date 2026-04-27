@@ -9,6 +9,8 @@
     import reload from './assets/reload.svg';
     import amount from './assets/coin.svg';
 
+    let disabled = true;
+
     $: expenses = $amounts.filter(amount => amount.type === 'expense');
     $: incomes = $amounts.filter(amount => amount.type === 'income');
 
@@ -40,11 +42,11 @@
     <img src={reload} alt="reload app"/>
     <span>reload</span></button>
   <button class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
-  <button class="my-bussiness nav__item" on:click={handleClearStorage}><img src={bussiness} alt="my bussiness"/><span>bussiness</span></button>
+  <button class:button-disabled={disabled} class="my-bussiness nav__item" on:click={handleClearStorage}><img src={bussiness} alt="my bussiness"/><span>bussiness</span></button>
 </nav>
 <!-- <Income></Income> -->
 <NewAmount></NewAmount>
-<table>
+<table class="expenses">
   <thead>
     <tr>
       <th>description</th>
@@ -68,7 +70,7 @@
     {/if}
   </tbody>
 </table>
-<table>
+<table class="incomes">
   <thead>
     <tr>
       <th>description</th>
@@ -104,9 +106,23 @@
     padding: 10px;
   }
 
+  th {
+    text-transform: capitalize;
+  }
+
   table {
     border-collapse: collapse;
     width: 100%;
+    color: #3c4143;
+  }
+
+  .expenses {
+    background-color: #fdbbdb;
+    border-color: red;
+  }
+  
+  .incomes {
+    background-color: #9bdab4;
   }
 
   .account-summary {
@@ -116,6 +132,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    z-index: 1;
 
     &__income {
       // width: 50%;
@@ -139,7 +156,6 @@
     position: relative;
     overflow: hidden;
     text-align: right;
-    z-index: 1;
 
     span {
       position: absolute;
@@ -184,6 +200,10 @@
         color: #000000;
         font-size: 18px;
       }
+    }
+
+    .button-disabled {
+      opacity: 0.3;
     }
   }
 
