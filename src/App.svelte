@@ -41,7 +41,7 @@
   <button class="reload nav__item" on:click={handleClearStorage}>
     <img src={reload} alt="reload app"/>
     <span>reload</span></button>
-  <button class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
+  <button disabled class:button-disabled={disabled} class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
   <button disabled class:button-disabled={disabled} class="my-bussiness nav__item" on:click={handleClearStorage}><img src={bussiness} alt="my bussiness"/><span>bussiness</span></button>
 </nav>
 <!-- <Income></Income> -->
