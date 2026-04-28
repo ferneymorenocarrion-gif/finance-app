@@ -8,8 +8,11 @@
     import bussiness from './assets/bag.svg';
     import reload from './assets/reload.svg';
     import amount from './assets/coin.svg';
+    import arrow from './assets/arrow.svg';
 
     let disabled = true;
+    let isPopupOpen = false;
+    let isSummaryClosed = false;
 
     $: expenses = $amounts.filter(amount => amount.type === 'expense');
     $: incomes = $amounts.filter(amount => amount.type === 'income');
@@ -29,16 +32,40 @@
 
     $: console.log('amounts', $amounts);
     $: console.log('expense.expenseCreation', $amounts[0]?.amountCreation);
+
+
+    const handlePopup = () => {
+      isPopupOpen = !isPopupOpen;
+    }
+    
+    const handleToggleSummary = () => {
+      isSummaryClosed = !isSummaryClosed;
+    }
 </script>
 
+{#if isPopupOpen}
+  <div class="reset-app-popup">
+  <div class="reset-app-popup__content">
+    <h4>Are you sure to reset the app?</h4>
+    <span>This action will delete your current information</span>
+    <div class="reset-app-popup__actions">
+      <button class="reset-app-popup__cancel" on:click={handlePopup}>cancel</button>
+      <button class="reset-app-popup__confirm" on:click={handleClearStorage}>confirm</button>
+    </div>
+  </div>
+</div>
+{/if}
 <section id="center">
-<div class="account-summary">
+<div class="account-summary" class:toggle-summary={isSummaryClosed}>
+  <button on:click={handleToggleSummary}>{isSummaryClosed ? 'show amounts' : 'hide amounts'}
+    <img src={arrow} alt="reload app"/>
+  </button>
   <div class="account-summary__income summary"><span>Income</span><p>{formatAmount(totalIncomes)}</p></div>
   <div class="account-summary__expenses summary"><span>Expenses</span><p>{formatAmount(totalExpenses)}</p></div>
   <div class="account-summary__balance summary"><span>Balance</span><p>{formatAmount(Number(totalIncomes) - totalExpenses)}</p></div>
 </div>
 <nav class="nav">
-  <button class="reload nav__item" on:click={handleClearStorage}>
+  <button class="reload nav__item" on:click={handlePopup}>
     <img src={reload} alt="reload app"/>
     <span>reload</span></button>
   <button disabled class:button-disabled={disabled} class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
@@ -133,6 +160,7 @@
     flex-direction: column;
     width: 100%;
     z-index: 1;
+    transition: bottom 0.4s linear;
 
     &__income {
       // width: 50%;
@@ -147,6 +175,32 @@
     &__balance {
       // width: 100%;
       background-color: #40bfff;
+    }
+
+    button {
+      font-size: 15px;
+      text-transform: capitalize;
+      padding: 5px 0 5px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #e8e8e8;
+      border: 0;
+      color: #000;
+
+      img {
+        height: 40px;
+      }
+    }
+  }
+
+  .toggle-summary {
+    bottom: -134px;
+
+    button {
+      img {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -178,6 +232,7 @@
     bottom: 0;
     background-color: #e8e8e8;
     z-index: 1;
+    border-top: 1px solid #777a7c;
 
     .reload {
       width: 25%;
@@ -204,6 +259,47 @@
 
     .button-disabled {
       opacity: 0.3;
+    }
+  }
+
+  .reset-app-popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 85%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__content {
+      width: 80%;
+      background-color: #ffffff;
+      padding: 30px 10px;
+
+      h4 {
+        margin: 0 0 5px;
+      }
+    }
+
+    &__actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-evenly;
+      
+      button {
+        border: 0px;
+        padding: 10px 30px;
+        font-size: 15px;
+      }
+    }
+
+    &__cancel {
+      background-color: #9fa1a2;
+    }
+
+    &__confirm {
+      background-color: #0ba449;
     }
   }
 
