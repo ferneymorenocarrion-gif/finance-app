@@ -1,6 +1,10 @@
 <script lang="ts">
 import {amounts} from '../../store/amounts';
 import type {Amount} from '../../types/common'
+import { v4 as uuidv4 } from "uuid";
+
+
+export let isNewAmountPopupOpen: boolean = false;
 
 let description: string;
 let amount: number | string;
@@ -14,11 +18,17 @@ const handleNewExpense = () => {
         amount,
         amountCreation: new Date(),
         type: typeOfAmount,
+        id: uuidv4(),
     }])
 
     description = '';
     amount = '';
     typeOfAmount = '';
+    isNewAmountPopupOpen = false;
+}
+
+const handleCloseNewAmountPopup = () => {
+    isNewAmountPopupOpen = false;
 }
 
 </script>
@@ -37,7 +47,8 @@ const handleNewExpense = () => {
                 <option value='expense'>Expense</option>
                 <option value='income'>Income</option>
             </select>
-            <button class="save" disabled={isDisabled} type="submit" aria-label="save-expense">save</button>
+            <button class="save" disabled={isDisabled} type="submit" aria-label="save-new-amount">save</button>
+            <button class="cancel" aria-label="cancel-new-amount" on:click={handleCloseNewAmountPopup}>cancel</button>
         </form>
     </div>
 </div>
@@ -91,10 +102,13 @@ const handleNewExpense = () => {
                 background: none;
                 border: 1px solid white;
                 padding: 10px 5px;
+                text-transform: uppercase;
+                font-weight: 600;
+                font-size: 16px;
             }
-
-            .save {
-                font-size: 20px;
+            
+            .cancel {
+                background-color: #fca1a2;
             }
         }
     }

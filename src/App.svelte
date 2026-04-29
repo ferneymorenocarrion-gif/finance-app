@@ -1,7 +1,7 @@
 <script>
     import NewAmount from './components/newAmount/NewAmount.svelte';
-    import {amounts} from './store/amounts';
-    import {income} from './store/income';
+    import {amounts, amountsKey} from './store/amounts';
+    import { v4 as uuidv4 } from "uuid";
     import { formatDate } from './utils/dateFormatting';
     import { formatAmount } from './utils/amountFormatter';
     // import Income from './components/income/Income.svelte';
@@ -12,6 +12,7 @@
 
     let disabled = true;
     let isPopupOpen = false;
+    let isNewAmountPopupOpen = false;
     let isSummaryClosed = false;
 
     $: expenses = $amounts.filter(amount => amount.type === 'expense');
@@ -26,7 +27,8 @@
     }, 0)
 
     const handleClearStorage = () => {
-      localStorage.clear();
+      localStorage.setItem(`temporal_data_${uuidv4()}`, JSON.stringify($amounts));
+      localStorage.removeItem(amountsKey);
       window.location.reload();
     }
 
@@ -38,10 +40,22 @@
       isPopupOpen = !isPopupOpen;
     }
     
+    const handleOpenNewAmount = () => {
+      isNewAmountPopupOpen = true;
+    }
+    
     const handleToggleSummary = () => {
       isSummaryClosed = !isSummaryClosed;
     }
 </script>
+
+{#if isNewAmountPopupOpen}
+<div class="new-amount-popup">
+  <div class="new-amount-popup__content">
+    <NewAmount bind:isNewAmountPopupOpen={isNewAmountPopupOpen}></NewAmount>
+  </div>
+</div>
+{/if}
 
 {#if isPopupOpen}
   <div class="reset-app-popup">
@@ -55,7 +69,7 @@
   </div>
 </div>
 {/if}
-<section id="center">
+<section class="finance-app">
 <div class="account-summary" class:toggle-summary={isSummaryClosed}>
   <button on:click={handleToggleSummary}>{isSummaryClosed ? 'show amounts' : 'hide amounts'}
     <img src={arrow} alt="reload app"/>
@@ -67,12 +81,11 @@
 <nav class="nav">
   <button class="reload nav__item" on:click={handlePopup}>
     <img src={reload} alt="reload app"/>
-    <span>reload</span></button>
-  <button disabled class:button-disabled={disabled} class="add-amount nav__item" on:click={handleClearStorage}><img src={amount} alt="my bussiness"/><span>amount</span></button>
+    <span>reset</span></button>
+  <button class="add-amount nav__item" on:click={handleOpenNewAmount}><img src={amount} alt="my bussiness"/><span>new amount</span></button>
   <button disabled class:button-disabled={disabled} class="my-bussiness nav__item" on:click={handleClearStorage}><img src={bussiness} alt="my bussiness"/><span>bussiness</span></button>
 </nav>
-<!-- <Income></Income> -->
-<NewAmount></NewAmount>
+<h3>Expenses</h3>
 <table class="expenses">
   <thead>
     <tr>
@@ -97,6 +110,7 @@
     {/if}
   </tbody>
 </table>
+<h3>Incomes</h3>
 <table class="incomes">
   <thead>
     <tr>
@@ -128,6 +142,15 @@
 </section>
 
 <style lang="scss">
+
+  .finance-app {
+    padding: 5%;
+  }
+  h3 {
+    color: #ffffff;
+    text-align: left;
+    margin: 15px 0 5px;
+  }
   table, td, th {
     border: 1px solid;
     padding: 10px;
@@ -233,6 +256,7 @@
     background-color: #e8e8e8;
     z-index: 1;
     border-top: 1px solid #777a7c;
+    left: 0;
 
     .reload {
       width: 25%;
@@ -259,6 +283,21 @@
 
     .button-disabled {
       opacity: 0.3;
+    }
+  }
+
+  .new-amount-popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 85%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__content {
+      width: 90%;
     }
   }
 
@@ -291,6 +330,8 @@
         border: 0px;
         padding: 10px 30px;
         font-size: 15px;
+        color: #ffffff;
+        text-transform: uppercase;
       }
     }
 
