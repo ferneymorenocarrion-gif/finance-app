@@ -105,6 +105,7 @@ const handleCloseNewAmountPopup = () => {
                 text-transform: uppercase;
                 font-weight: 600;
                 font-size: 16px;
+                color: #ffffff;
             }
             
             .cancel {
