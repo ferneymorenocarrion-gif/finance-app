@@ -1,10 +1,8 @@
 <script>
     import NewAmount from './components/newAmount/NewAmount.svelte';
     import {amounts, amountsKey} from './store/amounts';
-    import { v4 as uuidv4 } from "uuid";
     import { formatDate } from './utils/dateFormatting';
     import { formatAmount } from './utils/amountFormatter';
-    // import Income from './components/income/Income.svelte';
     import bussiness from './assets/bag.svg';
     import reload from './assets/reload.svg';
     import amount from './assets/coin.svg';
@@ -27,7 +25,7 @@
     }, 0)
 
     const handleClearStorage = () => {
-      localStorage.setItem(`temporal_data_${uuidv4()}`, JSON.stringify($amounts));
+      localStorage.setItem('temporal_data', JSON.stringify($amounts));
       localStorage.removeItem(amountsKey);
       window.location.reload();
     }
