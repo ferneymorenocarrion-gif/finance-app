@@ -1,7 +1,7 @@
 export interface Amount {
     description: string;
     amount: number | string;
-    amountCreation: Date;
+    amountCreation: Date | string;
     type: string;
     id: string;
 }

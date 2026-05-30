@@ -1,42 +1,62 @@
 <script lang="ts">
-import {amounts} from '../../store/amounts';
+import {amounts, amountsKey} from '../../store/amounts';
 import type {Amount} from '../../types/common'
 import { v4 as uuidv4 } from "uuid";
 
 
-export let isNewAmountPopupOpen: boolean = false;
+export let isAmountFormPopupOpen: boolean = false;
+export let itemToEdit: Amount;
 
-let description: string;
-let amount: number | string;
-let typeOfAmount: string;
+console.log('itemToEdit in form', itemToEdit)
+
+let description: string = itemToEdit && itemToEdit.description || '';
+let amount: number | string = itemToEdit && itemToEdit.amount || '';
+let typeOfAmount: string = itemToEdit && itemToEdit.type || '';
 
 $: isDisabled = !description || !amount || !typeOfAmount;
 
-const handleNewExpense = () => {
-    amounts.update((amountInfo: Amount[]) => [{
-        description,
-        amount,
-        amountCreation: new Date(),
-        type: typeOfAmount,
-        id: uuidv4(),
-    }, ...amountInfo])
+const handleExpense = () => {
+
+    const isItemPresent = $amounts.find(item => item.id === itemToEdit.id);
+
+    if (isItemPresent) {
+        const editedItem = {
+            ...itemToEdit,
+            description,
+            amountCreation: new Date(),
+            amount,
+            type: typeOfAmount,
+        }
+        amounts.update((items: Amount[]) => {
+            return items.map(item => item.id === editedItem.id ? editedItem : item)
+        })
+    } else {
+        amounts.update((amountInfo: Amount[]) => [{
+            description,
+            amount,
+            amountCreation: new Date(),
+            type: typeOfAmount,
+            id: uuidv4(),
+        }, ...amountInfo]);
+    }
+
 
     description = '';
     amount = '';
     typeOfAmount = '';
-    isNewAmountPopupOpen = false;
+    isAmountFormPopupOpen = false;
 }
 
 const handleCloseNewAmountPopup = () => {
-    isNewAmountPopupOpen = false;
+    isAmountFormPopupOpen = false;
 }
 
 </script>
 
-<div class="new-amount">
-    <span class="new-amount__title">amount</span>
-    <div class="new-amount__content">
-        <form on:submit|preventDefault={handleNewExpense}>
+<div class="amount-form">
+    <span class="amount-form__title">Edit Amount</span>
+    <div class="amount-form__content">
+        <form on:submit|preventDefault={handleExpense}>
             <label for="description">description</label>
             <input id="description" type="text" bind:value={description}>
             <label for="amount">amount</label>
@@ -47,14 +67,14 @@ const handleCloseNewAmountPopup = () => {
                 <option value='expense'>Expense</option>
                 <option value='income'>Income</option>
             </select>
-            <button class="save" disabled={isDisabled} type="submit" aria-label="save-new-amount">save</button>
-            <button class="cancel" aria-label="cancel-new-amount" on:click={handleCloseNewAmountPopup}>cancel</button>
+            <button class="save" disabled={isDisabled} type="submit" aria-label="save-amount">save</button>
+            <button class="cancel" aria-label="cancel-amount" on:click={handleCloseNewAmountPopup}>cancel</button>
         </form>
     </div>
 </div>
 
 <style lang="scss">
-    .new-amount {
+    .amount-form {
         border: 1px solid white;
         padding: 10px 20px 20px;
         width: 100%;
@@ -64,12 +84,12 @@ const handleCloseNewAmountPopup = () => {
 
         &__title {
             position: absolute;
-            left: 0;
+            left: -5px;
             top: 5px;
             font-size: 70px;
             font-weight: 600;
             color: rgba(0, 0, 0, 0.2);
-            right: 0;
+            min-width: 390px;
         }
 
         &__content {
@@ -105,7 +125,7 @@ const handleCloseNewAmountPopup = () => {
                 text-transform: uppercase;
                 font-weight: 600;
                 font-size: 16px;
-                // color: #ffffff;
+                color: #ffffff;
             }
             
             .cancel {
